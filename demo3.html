@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Quick Start - Leaflet</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="geojson.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+    <style>
+        .marker {
+            display: block;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="mapid" style="width: 80vw; height: 80vh;"></div>
+
+    <script>
+        /*
+     var mymap = L.map('mapid', {
+         minZoom: 0,
+         maxZoom: 18,
+         zoomSnap: 0,
+         zoomDelta: 0.25
+     }).setView([41.139914, -8.609363], 14);
+
+     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+         maxZoom: 18,
+         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+             'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+         id: 'mapbox/streets-v11',
+         tileSize: 512,
+         zoomOffset: -1
+     }).addTo(mymap);
+
+             $.getJSON(my_url, function (json) {
+     
+                 //  latitude  = fhirpath.evaluate(json, "contained.first().address.extension('http://hl7.org/fhir/StructureDefinition/geolocation').extension('latitude').valueDecimal")[0];
+                 //  longitude = fhirpath.evaluate(json, "contained.first().address.extension('http://hl7.org/fhir/StructureDefinition/geolocation').extension('longitude').valueDecimal")[0];
+     
+                 contained_org_id = fhirpath.evaluate(json, "implementation.custodian.reference.substring(1,999)")[0];
+     
+                 latitude = fhirpath.evaluate(json, "contained.where(id=%contained_org_id).address.extension('http://hl7.org/fhir/StructureDefinition/geolocation').extension('latitude').valueDecimal", { contained_org_id: contained_org_id })[0];
+                 longitude = fhirpath.evaluate(json, "contained.where(id=%contained_org_id).address.extension('http://hl7.org/fhir/StructureDefinition/geolocation').extension('longitude').valueDecimal", { contained_org_id: contained_org_id })[0];
+     
+     
+                 L.marker([latitude, longitude]).addTo(mymap)
+                     .bindPopup("<b>Hallo wereld!</b><br />Ik bmymapen ook een pop-up.");
+     
+             });
+     
+     L.marker([41.139914, -8.61]).addTo(mymap)
+         .bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();
+
+     L.circle([41.134542, -8.604402], 100, {
+         color: 'red',
+         fillColor: '#f03',
+         fillOpacity: 0.5
+     }).addTo(mymap).bindPopup("I am a circle.");
+
+     L.polygon([
+         [41.147146, -8.612189],
+         [41.14457, -8.612404],
+         [41.145076, -8.611191]
+     ]).addTo(mymap).bindPopup("I am a polygon.");
+
+
+     var popup = L.popup();
+*/
+        mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+
+        const map = new mapboxgl.Map({
+            container: 'mapid',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [-8.609363, 41.139914],
+            zoom: 12
+        });
+
+        map.on('load', () => {
+            // Add an image to use as a custom marker
+            map.loadImage(
+                'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png',
+                (error, image) => {
+                    if (error) throw error;
+                    map.addImage('custom-marker', image);
+                    // Add a GeoJSON source with 2 points
+                    map.addSource('points', {
+                        'type': 'geojson',
+                        'data': geojson
+                    });
+
+                    // Add a symbol layer
+                    map.addLayer({
+                        'id': 'points',
+                        'type': 'symbol',
+                        'source': 'points',
+                        'layout': {
+                            'icon-image': 'custom-marker',
+                            // get the title name from the source's "title" property
+                            'text-field': ['get', 'title'],
+                            'text-font': [
+                                'Open Sans Semibold',
+                                'Arial Unicode MS Bold'
+                            ],
+                            'text-offset': [0, 1.25],
+                            'text-anchor': 'top'
+                        }
+                    });
+                }
+            );
+        });
+
+    </script>
+
+
+</body>
+
+</html>

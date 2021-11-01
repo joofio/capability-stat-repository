@@ -1,5 +1,71 @@
 {
     "resourceType": "CapabilityStatement",
+    "contained": [
+      {
+        "resourceType": "Organization",
+        "id": "Org1",
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "text": "Zorginstelling naam"
+            },
+            "system": "http://www.zorgkaartnederland.nl/",
+            "value": "Blijdorp MC"
+          }
+        ],
+        "active": true,
+        "type": [
+          {
+            "coding": [
+              {
+                "code": "405608006",
+                "system": "http://snomed.info/sct",
+                "display": "Academic Medical Center"
+              },
+              {
+                "code": "prov",
+                "system": "http://terminology.hl7.org/CodeSystem/organization-type"
+              }
+            ]
+          }
+        ],
+        "name": "Unidade Local de Saude de Matosinhos",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+31107040704",
+            "use": "work"
+          }
+        ],
+        "address": [
+          {
+            "use": "work",
+            "line": [
+              "apenrots 230"
+            ],
+            "city": "Blijdorp",
+            "postalCode": "3056BE",
+            "country": "NLD",
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/geolocation",
+                "extension": [
+                  {
+                    "url": "latitude",
+                    "valueDecimal": 41.18236
+                  },
+                  {
+                    "url": "longitude",
+                    "valueDecimal": -8.66339
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
     "id": "terminology-server",
     "text": {
       "status": "extensions",
