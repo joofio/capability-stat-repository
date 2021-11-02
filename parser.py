@@ -25,7 +25,7 @@ for file in onlyfiles:
     long = evaluate(data,LONG_FHIR_PATH , "")
   #  print(long)
     #result[cs_id]=[lat[0],long[0],org_name]
-    node["properties"]["message"]=org_name
+    node["properties"]["message"]="<a href='www.google.com'>"+org_name+"</a>"
     node["geometry"]["coordinates"]=[long[0],lat[0]]
     #result[cs_id].append(lat[0],long[0])
     final_list.append(node)
@@ -33,6 +33,6 @@ for file in onlyfiles:
 result['type']='FeatureCollection'
 result["features"]=final_list
 
-with open("geojson2.js", "w") as fout:
+with open("geojson.js", "w") as fout:
         fout.write("const geojson = ")
         json.dump(result, fout)
